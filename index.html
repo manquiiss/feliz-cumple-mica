@@ -302,8 +302,8 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
-    padding:28px 0;
+    justify-content:flex-start;
+    padding-top:36px;
     overflow:hidden;
     background:
       radial-gradient(circle at 50% 15%, rgba(138,92,255,0.30), transparent 60%),
@@ -353,49 +353,46 @@
   }
 
   .wheel-arrow{
-    position:relative;
+    position:absolute;
     z-index:3;
+    top:-38px;
+    left:50%;
+    transform:translateX(-50%);
     width:0;
     height:0;
-    margin-top:auto;
-    margin-bottom:-8px;
     border-left:15px solid transparent;
     border-right:15px solid transparent;
     border-top:30px solid var(--gold);
     filter:drop-shadow(0 2px 8px rgba(255,209,102,0.75));
-    flex-shrink:0;
   }
 
+  /* wheel-dock is position:absolute — completely OUT of the flex flow.
+     Growing or translating it can never push roulette-inner. */
   .wheel-dock{
-    position:relative;
-    /* extra horizontal room so the glow shadow is never clipped */
+    position:absolute;
+    left:50%;
+    /* sits below the roulette-inner (title+button ~260px + padding 36px) */
+    top:clamp(280px, 38vh, 340px);
+    transform:translateX(-50%);
     width:calc(var(--vpw, 100vw) + 160px);
-    /* initial height: wheel fits neatly on screen */
-    height:min(calc(var(--vpw, 100vw) * 0.90), calc(var(--vph, 100vh) * 0.52), 360px);
-    /* overflow:visible so drop-shadows / glows are never clipped */
     overflow:visible;
-    transition:height 900ms cubic-bezier(.25,0,.2,1);
-    flex-shrink:0;
-  }
-  .wheel-dock.grown{
-    /* grown: wheel is much bigger — deliberately overflows the bottom of the screen */
-    height:min(calc(var(--vpw, 100vw) * 1.15), calc(var(--vph, 100vh) * 0.78), 700px);
+    /* no layout animations — only the stage inside transforms */
   }
 
   .wheel-stage{
     position:absolute;
     left:50%;
     top:0;
-    width:min(calc(var(--vpw, 100vw) * 0.90), calc(var(--vph, 100vh) * 0.52), 360px);
+    width:min(calc(var(--vpw, 100vw) * 0.92), calc(var(--vph, 100vh) * 0.54), 390px);
     aspect-ratio:1/1;
-    transform:translateX(-50%);
-    transition:width 900ms cubic-bezier(.25,0,.2,1);
-    /* ensure the stage itself never clips its own shadow */
+    /* start: centered horizontally, no vertical offset */
+    transform:translateX(-50%) translateY(0);
+    transition:width 900ms cubic-bezier(.25,0,.2,1), transform 900ms cubic-bezier(.25,0,.2,1);
     overflow:visible;
   }
   .wheel-dock.grown .wheel-stage{
-    /* grown: fills the full viewport width, spills off the bottom */
-    width:min(calc(var(--vpw, 100vw) * 1.15), calc(var(--vph, 100vh) * 0.78), 700px);
+    width:min(calc(var(--vpw, 100vw) * 1.45), calc(var(--vph, 100vh) * 1.05), 880px);
+    transform:translateX(-50%) translateY(10vh);
   }
 
   #wheelCanvas{
@@ -462,12 +459,13 @@
   .roulette-result{
     min-height:26px;
     text-align:center;
-    font-size:16px;
+    font-size:18px;
     font-weight:500;
     color:var(--text);
     opacity:0;
     transform:translateY(8px);
     transition:opacity 0.5s ease, transform 0.5s ease;
+    padding:4px 0 2px;
   }
   .roulette-result.show{
     opacity:1;
@@ -525,9 +523,10 @@
       <div class="roulette-result" id="rouletteResult"></div>
     </div>
 
-    <div class="wheel-arrow"></div>
+    <!-- arrow lives inside wheel-stage so it translates/grows with it -->
     <div class="wheel-dock" id="wheelDock">
       <div class="wheel-stage" id="wheelStage">
+        <div class="wheel-arrow"></div>
         <canvas id="wheelCanvas"></canvas>
         <div class="wheel-pin"></div>
       </div>
@@ -788,34 +787,31 @@
       if (spinning) return;
       spinning = true;
       stopIdle();
-      spinBtn.disabled = true;
+      // hide the button immediately — result message will take its space
+      spinBtn.style.transition = 'opacity 0.3s ease';
+      spinBtn.style.opacity = '0';
+      setTimeout(() => { spinBtn.style.display = 'none'; }, 300);
       rouletteResult.classList.remove('show');
       rouletteResult.textContent = '';
       wheelDock.classList.add('grown');
 
       const startRotation = currentRotation;
 
-      // phase 1: settle deep into Auto 0km, on the side closest to Camperita —
-      // "closest to Camperita" is reached LATE as the wheel spins forward, so a
-      // small frac (near auto's own start) is what lands there
       const teaseBase = rotationFor(TEASE_INDEX, 0.18);
       const startTurns = Math.floor(startRotation / 360);
       const teaseRotation = (startTurns + 7) * 360 + teaseBase;
 
-      // phase 2: just barely into Camperita on the side shared with Auto —
-      // nowhere near its center — minimal forward nudge
       const winnerBase = rotationFor(WINNER_INDEX, 0.90);
       const snapDelta = ((winnerBase - (teaseRotation % 360)) % 360 + 360) % 360;
       const winnerRotation = teaseRotation + snapDelta;
 
-      animateRotation(startRotation, teaseRotation, 13000, teaseEase, () => {
+      animateRotation(startRotation, teaseRotation, 22000, teaseEase, () => {
         setTimeout(() => {
           animateRotation(teaseRotation, winnerRotation, 480, easeOutQuad, () => {
             spawnConfetti();
             rouletteResult.innerHTML = `¡Ganaste... una <strong>Camperita Facherita</strong>! 🧥`;
             rouletteResult.classList.add('show');
-            spinBtn.disabled = false;
-            spinBtn.textContent = 'Girar de nuevo';
+            // button stays hidden — no "Girar de nuevo"
             spinning = false;
             startIdle();
           });
