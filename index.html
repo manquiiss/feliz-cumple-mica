@@ -366,17 +366,19 @@
     filter:drop-shadow(0 2px 8px rgba(255,209,102,0.75));
   }
 
-  /* wheel-dock is position:absolute — completely OUT of the flex flow.
-     Growing or translating it can never push roulette-inner. */
+  /* wheel-dock is position:absolute — completely OUT of the flex flow, so
+     growing/translating it can never push roulette-inner. Its "top" is kept
+     in sync with roulette-inner's actual measured height by JS (positionWheelDock)
+     because that height changes between the idle blurb and the big "Girando..."
+     line; this clamp is just the pre-JS fallback for the very first paint. */
   .wheel-dock{
     position:absolute;
     left:50%;
-    /* sits below the roulette-inner (title+button ~260px + padding 36px) */
     top:clamp(280px, 38vh, 340px);
     transform:translateX(-50%);
     width:calc(var(--vpw, 100vw) + 160px);
     overflow:visible;
-    /* no layout animations — only the stage inside transforms */
+    transition:top 0.3s ease;
   }
 
   .wheel-stage{
@@ -712,6 +714,17 @@
     const winReveal = document.getElementById('winReveal');
     const rouletteFlavor = document.getElementById('rouletteFlavor');
     const flavorMsg = document.getElementById('flavorMsg');
+    const rouletteInnerEl = document.querySelector('.roulette-inner');
+
+    // wheel-dock is positioned out of the normal flow (so growing/moving the
+    // wheel never reflows the page), but that means its "top" has to be kept
+    // in sync by hand — measure where roulette-inner's content actually ends
+    // (title/button/flavor text, whose height changes between the idle blurb
+    // and the big "Girando..." line) so the wheel/arrow never overlaps it
+    function positionWheelDock(){
+      const rect = rouletteInnerEl.getBoundingClientRect();
+      wheelDock.style.top = Math.round(rect.bottom + 24) + 'px';
+    }
 
     // big shimmering "Girando......" fills the empty space above the wheel
     // while it spins, instead of leaving it blank until the result
@@ -719,9 +732,11 @@
       flavorMsg.innerHTML = 'Girando<span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span>';
       rouletteFlavor.classList.remove('hide');
       rouletteFlavor.classList.add('spinning');
+      positionWheelDock();
     }
     function stopFlavorCycle(){
       rouletteFlavor.classList.remove('spinning');
+      positionWheelDock();
     }
 
     // document.documentElement.clientWidth/Height exclude the scrollbar, unlike
@@ -848,6 +863,7 @@
     function initWheel(){
       if (cssSize) return;
       setViewportVars();
+      positionWheelDock();
       renderWheel(0);
       startIdle();
     }
@@ -945,6 +961,7 @@
 
     window.addEventListener('resize', () => {
       if (cssSize) renderWheel(currentRotation);
+      if (cssSize) positionWheelDock();
     });
 
     // fireworks
