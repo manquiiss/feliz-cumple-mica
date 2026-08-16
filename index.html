@@ -456,26 +456,50 @@
     cursor:default;
   }
 
+  .roulette-flavor{
+    text-align:center;
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--text-dim);
+    opacity:0.8;
+    font-style:italic;
+    transition:opacity 0.4s ease;
+  }
+  .roulette-flavor.hide{
+    opacity:0;
+  }
+
   .roulette-result{
     min-height:26px;
+    max-width:300px;
     text-align:center;
-    font-size:18px;
+    font-size:21px;
+    line-height:1.5;
     font-weight:500;
     color:var(--text);
     opacity:0;
-    transform:translateY(8px);
+    transform:translateY(8px) scale(0.94);
     transition:opacity 0.5s ease, transform 0.5s ease;
     padding:4px 0 2px;
   }
   .roulette-result.show{
     opacity:1;
-    transform:translateY(0);
+    transform:translateY(0) scale(1);
   }
   .roulette-result strong{
+    display:inline-block;
     color:var(--gold);
     font-family:'Playfair Display', serif;
     font-style:italic;
     font-weight:600;
+  }
+  .roulette-result .result-sub{
+    display:block;
+    margin-top:10px;
+    font-size:14.5px;
+    font-weight:400;
+    color:var(--pink-soft);
+    font-style:italic;
   }
 </style>
 </head>
@@ -520,6 +544,9 @@
       <div class="roulette-eyebrow">girá y descubrí tu premio</div>
 
       <button class="spin-btn" id="spinBtn">Girar</button>
+      <div class="roulette-flavor" id="rouletteFlavor">
+        el destino ya eligió tu premio...<br>¿tenés lo que hay que tener? 👀✨
+      </div>
       <div class="roulette-result" id="rouletteResult"></div>
     </div>
 
@@ -607,6 +634,7 @@
     const wctx = wheelCanvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
     const rouletteResult = document.getElementById('rouletteResult');
+    const rouletteFlavor = document.getElementById('rouletteFlavor');
 
     // document.documentElement.clientWidth/Height exclude the scrollbar, unlike
     // 100vw/100vh — using raw vw units here made the wheel drift off-center
@@ -642,7 +670,19 @@
       wctx.clearRect(0, 0, size, size);
 
       const chordWidth = 2 * (radius * 0.66) * Math.sin((SEG / 2) * Math.PI / 180);
-      const maxTextWidth = chordWidth * 0.88;
+
+      // horizontal (non-rotated) labels don't fit the tangential chord the way
+      // radial text would — a slice pointing sideways is narrow horizontally even
+      // though its tangential chord is wide, so measure the actual left/right
+      // wedge boundary at the label's own height to stop neighboring labels
+      // (e.g. "Casa en Miami" / "Crucero Caribe") from overlapping each other
+      function wedgeBoundaryXAtY(theta, targetY){
+        const s = Math.sin(theta);
+        if (Math.abs(s) < 0.06) return null;
+        const t = (targetY - cy) / s;
+        if (t < 0 || t > radius * 1.05) return null;
+        return cx + t * Math.cos(theta);
+      }
 
       prizes.forEach((p, i) => {
         const localStart = i * SEG;
@@ -668,6 +708,11 @@
         const tdist = radius * 0.66;
         const tx = cx + Math.cos(midRad) * tdist;
         const ty = cy + Math.sin(midRad) * tdist;
+
+        const xA = wedgeBoundaryXAtY(startRad, ty);
+        const xB = wedgeBoundaryXAtY(endRad, ty);
+        const geometricWidth = (xA !== null && xB !== null) ? Math.abs(xB - xA) : chordWidth;
+        const maxTextWidth = Math.min(geometricWidth, chordWidth * 1.3) * 0.82;
 
         wctx.save();
         wctx.translate(tx, ty);
@@ -791,6 +836,7 @@
       spinBtn.style.transition = 'opacity 0.3s ease';
       spinBtn.style.opacity = '0';
       setTimeout(() => { spinBtn.style.display = 'none'; }, 300);
+      rouletteFlavor.classList.add('hide');
       rouletteResult.classList.remove('show');
       rouletteResult.textContent = '';
       wheelDock.classList.add('grown');
@@ -809,13 +855,13 @@
         setTimeout(() => {
           animateRotation(teaseRotation, winnerRotation, 480, easeOutQuad, () => {
             spawnConfetti();
-            rouletteResult.innerHTML = `¡Ganaste... una <strong>Camperita Facherita</strong>! 🧥`;
+            rouletteResult.innerHTML = `¡Ganaste... una <strong>Camperita Facherita</strong>! 🧥<span class="result-sub">feliz cumple Mica, ojalá te encante 💗</span>`;
             rouletteResult.classList.add('show');
             // button stays hidden — no "Girar de nuevo"
             spinning = false;
             startIdle();
           });
-        }, 900);
+        }, 300);
       });
     });
 
