@@ -725,6 +725,16 @@
       const rect = rouletteInnerEl.getBoundingClientRect();
       wheelDock.style.top = Math.round(rect.bottom + 24) + 'px';
     }
+    // catches every reason roulette-inner's height can change after the fact —
+    // most importantly the web fonts (Playfair/Poppins) finishing their load
+    // and reflowing the text *after* the first measurement, which left the
+    // wheel positioned for the shorter fallback-font text on real phones
+    if (window.ResizeObserver) {
+      new ResizeObserver(positionWheelDock).observe(rouletteInnerEl);
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(positionWheelDock);
+    }
 
     // big shimmering "Girando......" fills the empty space above the wheel
     // while it spins, instead of leaving it blank until the result
