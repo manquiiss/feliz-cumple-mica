@@ -745,15 +745,17 @@
 
     // big shimmering "Girando......" fills the empty space above the wheel
     // while it spins, instead of leaving it blank until the result
+    // NOTE: no positionWheelDock() call here on purpose — the flavor box has a
+    // fixed CSS height so its position never actually changes between states,
+    // and calling it here mid-animation used to catch the entrance pop's
+    // transient scaled-down size, permanently mispositioning the wheel
     function startFlavorCycle(){
       flavorMsg.innerHTML = 'Girando<span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span>';
       rouletteFlavor.classList.remove('hide');
       rouletteFlavor.classList.add('spinning');
-      positionWheelDock();
     }
     function stopFlavorCycle(){
       rouletteFlavor.classList.remove('spinning');
-      positionWheelDock();
     }
 
     // document.documentElement.clientWidth/Height exclude the scrollbar, unlike
@@ -940,10 +942,13 @@
       if (spinning) return;
       spinning = true;
       stopIdle();
-      // hide the button immediately — the "Girando..." text will take its space
+      // hide the button immediately — visibility:hidden (not display:none) so
+      // it keeps reserving its layout space; removing it from flow shrank
+      // roulette-inner, which shifted the absolutely-positioned flavor text
+      // (and with it the wheel below) up by the button's height — the "bug"
       spinBtn.style.transition = 'opacity 0.3s ease';
       spinBtn.style.opacity = '0';
-      setTimeout(() => { spinBtn.style.display = 'none'; }, 300);
+      setTimeout(() => { spinBtn.style.visibility = 'hidden'; }, 300);
       // wait a beat before showing "Girando..." — starting it the instant
       // the button/wheel animations kick off made it look glitchy
       setTimeout(startFlavorCycle, 500);
