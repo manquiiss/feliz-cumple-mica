@@ -321,6 +321,7 @@
   }
 
   .roulette-inner{
+    position:relative;
     width:100%;
     max-width:380px;
     padding:0 22px;
@@ -458,7 +459,17 @@
     cursor:default;
   }
 
+  /* position:absolute takes this fully out of roulette-inner's flex flow —
+     its content swaps between the idle blurb and the big "Girando..." line,
+     but since its own box (top/height) never changes, nothing else (title,
+     button, the wheel below) ever shifts when that swap happens */
   .roulette-flavor{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    margin-top:16px;
+    height:min(38vh, 220px);
     text-align:center;
     font-size:14.5px;
     line-height:1.6;
@@ -468,7 +479,6 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    min-height:44px;
     transition:opacity 0.4s ease;
   }
   .roulette-flavor.hide{
@@ -483,7 +493,6 @@
     font-family:'Playfair Display', serif;
     color:var(--pink-soft);
     text-shadow:0 0 24px rgba(255,95,162,0.65), 0 0 48px rgba(138,92,255,0.4);
-    min-height:min(38vh, 220px);
     animation:flavorEnter 0.35s ease-out, flavorPulse 1.3s ease-in-out 0.35s infinite;
   }
   @keyframes flavorEnter{
@@ -718,17 +727,15 @@
 
     // wheel-dock is positioned out of the normal flow (so growing/moving the
     // wheel never reflows the page), but that means its "top" has to be kept
-    // in sync by hand — measure where roulette-inner's content actually ends
-    // (title/button/flavor text, whose height changes between the idle blurb
-    // and the big "Girando..." line) so the wheel/arrow never overlaps it
+    // in sync by hand — measure where the flavor box actually ends. That box
+    // has a fixed height (see .roulette-flavor CSS) so swapping its content
+    // between the idle blurb and the big "Girando..." line never moves it —
+    // this only needs to react to real layout changes like a viewport resize
+    // or the web fonts finishing their load after the first measurement.
     function positionWheelDock(){
-      const rect = rouletteInnerEl.getBoundingClientRect();
-      wheelDock.style.top = Math.round(rect.bottom + 24) + 'px';
+      const rect = rouletteFlavor.getBoundingClientRect();
+      wheelDock.style.top = Math.round(rect.bottom + 8) + 'px';
     }
-    // catches every reason roulette-inner's height can change after the fact —
-    // most importantly the web fonts (Playfair/Poppins) finishing their load
-    // and reflowing the text *after* the first measurement, which left the
-    // wheel positioned for the shorter fallback-font text on real phones
     if (window.ResizeObserver) {
       new ResizeObserver(positionWheelDock).observe(rouletteInnerEl);
     }
