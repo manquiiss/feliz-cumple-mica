@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Feliz Cumple Mica 🎂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#0a0612;
+    --bg-2:#150a24;
+    --pink:#ff5fa2;
+    --pink-soft:#ff9ec7;
+    --purple:#8a5cff;
+    --gold:#ffd166;
+    --text:#f5eefc;
+    --text-dim:#c9b9e0;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html,body{
+    height:100%;
+    background:var(--bg-1);
+    overflow-x:hidden;
+  }
+
+  body{
+    font-family:'Poppins', sans-serif;
+    color:var(--text);
+    min-height:100dvh;
+    overflow-x:hidden;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px 56px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(138,92,255,0.35), transparent 60%),
+      radial-gradient(circle at 20% 80%, rgba(255,95,162,0.25), transparent 55%),
+      radial-gradient(circle at 80% 75%, rgba(255,209,102,0.12), transparent 50%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  }
+
+  /* glow blobs */
+  .glow{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(70px);
+    opacity:0.55;
+    z-index:0;
+    pointer-events:none;
+    animation:float 10s ease-in-out infinite;
+  }
+  .glow.g1{ width:280px; height:280px; background:var(--pink); top:-60px; left:-60px; animation-delay:0s; }
+  .glow.g2{ width:320px; height:320px; background:var(--purple); bottom:-80px; right:-60px; animation-delay:2s; }
+  .glow.g3{ width:200px; height:200px; background:var(--gold); top:40%; left:60%; opacity:0.25; animation-delay:4s; }
+
+  @keyframes float{
+    0%,100%{ transform:translateY(0) translateX(0); }
+    50%{ transform:translateY(-25px) translateX(15px); }
+  }
+
+  /* floating sparkles */
+  .sparkle{
+    position:fixed;
+    border-radius:50%;
+    background:var(--pink-soft);
+    opacity:0.7;
+    z-index:0;
+    pointer-events:none;
+    animation:drift linear infinite;
+  }
+  @keyframes drift{
+    0%{ transform:translateY(0) scale(1); opacity:0; }
+    10%{ opacity:0.8; }
+    90%{ opacity:0.4; }
+    100%{ transform:translateY(-100vh) scale(0.6); opacity:0; }
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:420px;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:var(--pink-soft);
+    font-weight:500;
+    opacity:0.9;
+  }
+
+  h1{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 11vw, 3.6rem);
+    line-height:1.05;
+    background:linear-gradient(135deg, #fff 10%, var(--pink-soft) 55%, var(--gold) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 40px rgba(255,95,162,0.35);
+    letter-spacing:0.5px;
+  }
+
+  .name{
+    font-style:italic;
+    display:block;
+  }
+
+  .divider{
+    width:70px;
+    height:2px;
+    background:linear-gradient(90deg, transparent, var(--pink-soft), transparent);
+    margin:2px 0;
+  }
+
+  .age-badge{
+    display:inline-block;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.5px;
+    color:var(--gold);
+    padding:6px 18px;
+    border:1px dashed rgba(255,209,102,0.55);
+    border-radius:999px;
+    transform:rotate(-3deg);
+    background:rgba(255,209,102,0.06);
+  }
+
+  p.message{
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text-dim);
+    font-weight:300;
+    max-width:340px;
+  }
+
+  p.message strong{
+    color:var(--text);
+    font-weight:500;
+  }
+
+  .heart{
+    font-size:28px;
+    animation:pulse 1.8s ease-in-out infinite;
+    filter:drop-shadow(0 0 12px rgba(255,95,162,0.7));
+  }
+
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.18); }
+  }
+
+  .roulette-btn{
+    margin-top:14px;
+    position:relative;
+    border:none;
+    outline:none;
+    cursor:pointer;
+    padding:18px 42px;
+    font-family:'Poppins', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:1px;
+    color:#fff;
+    border-radius:999px;
+    background:linear-gradient(135deg, var(--pink), var(--purple));
+    box-shadow:
+      0 0 20px rgba(255,95,162,0.55),
+      0 0 60px rgba(138,92,255,0.35),
+      inset 0 1px 1px rgba(255,255,255,0.4);
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .roulette-btn:active{
+    transform:scale(0.96);
+  }
+
+  @keyframes shakeRed{
+    0%,100%{ transform:translateX(0); }
+    15%{ transform:translateX(-9px); }
+    30%{ transform:translateX(8px); }
+    45%{ transform:translateX(-7px); }
+    60%{ transform:translateX(6px); }
+    75%{ transform:translateX(-3px); }
+    90%{ transform:translateX(2px); }
+  }
+  .roulette-btn.shake{
+    animation:shakeRed 0.5s ease;
+  }
+  .roulette-btn.pending{
+    background:linear-gradient(135deg, #ff3b3b, #b81414);
+    box-shadow:
+      0 0 20px rgba(255,59,59,0.6),
+      0 0 60px rgba(184,20,20,0.35),
+      inset 0 1px 1px rgba(255,255,255,0.4);
+    cursor:default;
+  }
+
+  .love-question{
+    max-height:0;
+    opacity:0;
+    transform:translateY(-6px);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    transition:max-height 0.5s ease, opacity 0.4s ease, transform 0.4s ease;
+  }
+  .love-question.show{
+    max-height:160px;
+    opacity:1;
+    transform:translateY(0);
+  }
+  .love-question-text{
+    font-size:16px;
+    font-weight:500;
+    color:var(--text);
+  }
+  .love-question-actions{
+    display:flex;
+    gap:14px;
+  }
+  .love-btn{
+    border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.06);
+    color:var(--text);
+    padding:10px 28px;
+    border-radius:999px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .love-btn:active{ transform:scale(0.94); }
+  .love-yes:hover{ background:rgba(255,95,162,0.25); border-color:var(--pink-soft); }
+  .love-no:hover{ background:rgba(255,255,255,0.14); }
+
+  .red-lockdown{
+    position:fixed;
+    inset:0;
+    z-index:999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+    text-align:center;
+    background:radial-gradient(circle at 50% 40%, #8a0000, #180000 85%);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.6s ease;
+  }
+  .red-lockdown.show{
+    opacity:1;
+    pointer-events:all;
+  }
+  .red-lockdown p{
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    line-height:1.7;
+    color:#ffdede;
+    max-width:280px;
+  }
+
+  .footer-note{
+    margin-top:26px;
+    font-size:12px;
+    color:var(--text-dim);
+    opacity:0.6;
+    letter-spacing:0.5px;
+  }
+
+  #fireworks{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* roulette overlay */
+  .roulette-overlay{
+    position:fixed;
+    inset:0;
+    z-index:40;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:28px 0;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 15%, rgba(138,92,255,0.30), transparent 60%),
+      radial-gradient(circle at 50% 90%, rgba(255,95,162,0.20), transparent 55%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(12px);
+    transition:opacity 0.4s ease, transform 0.4s ease;
+  }
+  .roulette-overlay.show{
+    opacity:1;
+    pointer-events:all;
+    transform:translateY(0);
+  }
+
+  .roulette-inner{
+    width:100%;
+    max-width:380px;
+    padding:0 22px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:26px;
+    flex-shrink:0;
+  }
+
+  .roulette-title{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:clamp(1.7rem, 7vw, 2.1rem);
+    background:linear-gradient(135deg, #fff 10%, var(--pink-soft) 55%, var(--gold) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-align:center;
+  }
+
+  .roulette-eyebrow{
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--pink-soft);
+    font-weight:500;
+    opacity:0.85;
+    margin-top:-14px;
+  }
+
+  .wheel-arrow{
+    position:relative;
+    z-index:3;
+    width:0;
+    height:0;
+    margin-top:auto;
+    margin-bottom:-8px;
+    border-left:15px solid transparent;
+    border-right:15px solid transparent;
+    border-top:30px solid var(--gold);
+    filter:drop-shadow(0 2px 8px rgba(255,209,102,0.75));
+    flex-shrink:0;
+  }
+
+  .wheel-dock{
+    position:relative;
+    /* extra horizontal room so the glow shadow is never clipped */
+    width:calc(var(--vpw, 100vw) + 160px);
+    /* initial height: wheel fits neatly on screen */
+    height:min(calc(var(--vpw, 100vw) * 0.90), calc(var(--vph, 100vh) * 0.52), 360px);
+    /* overflow:visible so drop-shadows / glows are never clipped */
+    overflow:visible;
+    transition:height 900ms cubic-bezier(.25,0,.2,1);
+    flex-shrink:0;
+  }
+  .wheel-dock.grown{
+    /* grown: wheel is much bigger — deliberately overflows the bottom of the screen */
+    height:min(calc(var(--vpw, 100vw) * 1.15), calc(var(--vph, 100vh) * 0.78), 700px);
+  }
+
+  .wheel-stage{
+    position:absolute;
+    left:50%;
+    top:0;
+    width:min(calc(var(--vpw, 100vw) * 0.90), calc(var(--vph, 100vh) * 0.52), 360px);
+    aspect-ratio:1/1;
+    transform:translateX(-50%);
+    transition:width 900ms cubic-bezier(.25,0,.2,1);
+    /* ensure the stage itself never clips its own shadow */
+    overflow:visible;
+  }
+  .wheel-dock.grown .wheel-stage{
+    /* grown: fills the full viewport width, spills off the bottom */
+    width:min(calc(var(--vpw, 100vw) * 1.15), calc(var(--vph, 100vh) * 0.78), 700px);
+  }
+
+  #wheelCanvas{
+    display:block;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    /* glow rendered here — visible because parents have overflow:visible */
+    filter:
+      drop-shadow(0 0 18px rgba(255,95,162,0.55))
+      drop-shadow(0 0 48px rgba(138,92,255,0.40));
+  }
+
+  .wheel-pin{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:15%;
+    height:15%;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, var(--gold) 60%, #b8873f 100%);
+    box-shadow:0 0 14px rgba(255,209,102,0.7), inset 0 0 5px rgba(0,0,0,0.25);
+    border:2px solid rgba(255,255,255,0.5);
+    z-index:3;
+  }
+
+  .confetti-bit{
+    position:fixed;
+    z-index:41;
+    font-size:20px;
+    pointer-events:none;
+    animation:confettiFly 1.1s ease-out forwards;
+  }
+  @keyframes confettiFly{
+    0%{ transform:translate(0,0) scale(0.6) rotate(0deg); opacity:1; }
+    100%{ transform:translate(var(--dx), var(--dy)) scale(1) rotate(var(--rot)); opacity:0; }
+  }
+
+  .spin-btn{
+    border:none;
+    outline:none;
+    cursor:pointer;
+    padding:16px 44px;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:1px;
+    color:#fff;
+    border-radius:999px;
+    background:linear-gradient(135deg, var(--pink), var(--purple));
+    box-shadow:
+      0 0 20px rgba(255,95,162,0.55),
+      0 0 60px rgba(138,92,255,0.35),
+      inset 0 1px 1px rgba(255,255,255,0.4);
+    transition:transform 0.2s ease, opacity 0.2s ease;
+  }
+  .spin-btn:active{ transform:scale(0.96); }
+  .spin-btn:disabled{
+    opacity:0.5;
+    cursor:default;
+  }
+
+  .roulette-result{
+    min-height:26px;
+    text-align:center;
+    font-size:16px;
+    font-weight:500;
+    color:var(--text);
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity 0.5s ease, transform 0.5s ease;
+  }
+  .roulette-result.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .roulette-result strong{
+    color:var(--gold);
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:600;
+  }
+</style>
+</head>
+<body>
+
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+  <canvas id="fireworks"></canvas>
+
+  <div class="card">
+    <div class="eyebrow">17 de Agosto</div>
+    <h1>Feliz Cumple<span class="name">Mica</span></h1>
+    <div class="age-badge">21 pirulos dou</div>
+    <div class="divider"></div>
+    <p class="message">
+      Mimito te deseo un feliz cumple, te amo mucho, espero que te guste mi regalito.
+      Gracias por ser como sos y ojalá este año te traiga todo lo que te mereces.
+    </p>
+    <div class="heart">💗 💖</div>
+
+    <button class="roulette-btn" id="rouletteBtn">Ruleta Sorpresa</button>
+
+    <div class="love-question" id="loveQuestion">
+      <p class="love-question-text">me amas🥺??</p>
+      <div class="love-question-actions">
+        <button class="love-btn love-yes" id="loveYes">Sí</button>
+        <button class="love-btn love-no" id="loveNo">No</button>
+      </div>
+    </div>
+
+    <div class="footer-note">hecho con amor, para vos</div>
+  </div>
+
+  <div class="red-lockdown" id="redLockdown">
+    <p>Esa no era la respuesta correcta 🙅‍♀️</p>
+  </div>
+
+  <div class="roulette-overlay" id="rouletteOverlay">
+    <div class="roulette-inner">
+      <div class="roulette-title">Ruleta Sorpresa</div>
+      <div class="roulette-eyebrow">girá y descubrí tu premio</div>
+
+      <button class="spin-btn" id="spinBtn">Girar</button>
+      <div class="roulette-result" id="rouletteResult"></div>
+    </div>
+
+    <div class="wheel-arrow"></div>
+    <div class="wheel-dock" id="wheelDock">
+      <div class="wheel-stage" id="wheelStage">
+        <canvas id="wheelCanvas"></canvas>
+        <div class="wheel-pin"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // sparkles
+    const sparkleCount = 18;
+    for(let i=0;i<sparkleCount;i++){
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      const size = Math.random()*4 + 2;
+      s.style.width = size+'px';
+      s.style.height = size+'px';
+      s.style.left = Math.random()*100+'vw';
+      s.style.bottom = (-20 - Math.random()*20)+'px';
+      s.style.animationDuration = (6 + Math.random()*8)+'s';
+      s.style.animationDelay = (Math.random()*8)+'s';
+      document.body.appendChild(s);
+    }
+
+    // roulette button flow: shake+red -> "me amas?" -> Sí unlocks, No locks everything
+    const btn = document.getElementById('rouletteBtn');
+    const loveQuestion = document.getElementById('loveQuestion');
+    const loveYes = document.getElementById('loveYes');
+    const loveNo = document.getElementById('loveNo');
+    const redLockdown = document.getElementById('redLockdown');
+    const rouletteOverlay = document.getElementById('rouletteOverlay');
+    let rouletteState = 'idle'; // idle -> asked -> unlocked | locked
+
+    btn.addEventListener('click', () => {
+      if (rouletteState === 'locked' || rouletteState === 'asked') return;
+      if (rouletteState === 'unlocked') {
+        rouletteOverlay.classList.add('show');
+        initWheel();
+        return;
+      }
+
+      rouletteState = 'asked';
+      btn.classList.add('shake', 'pending');
+      setTimeout(() => btn.classList.remove('shake'), 500);
+      loveQuestion.classList.add('show');
+    });
+
+    loveYes.addEventListener('click', () => {
+      if (rouletteState !== 'asked') return;
+      rouletteState = 'unlocked';
+      loveQuestion.classList.remove('show');
+      btn.classList.remove('pending');
+    });
+
+    loveNo.addEventListener('click', () => {
+      if (rouletteState !== 'asked') return;
+      rouletteState = 'locked';
+      redLockdown.classList.add('show');
+    });
+
+    // ---- roulette wheel (canvas-drawn) ----
+    const prizes = [
+      { lines: ['🏠 Casa', 'en Miami'] },
+      { lines: ['🧥 Camperita', 'Facherita'] },   // WINNER_INDEX
+      { lines: ['🚗 Auto 0km'] },                 // TEASE_INDEX
+      { lines: ['📱 iPhone 17', 'Pro Max'] },
+      { lines: ['✈️ Viaje', 'a Dubai'] },
+      { lines: ['🎮 PS5', '+ TV 85"'] },
+      { lines: ['💰 $1.000.000'] },
+      { lines: ['🛳️ Crucero', 'Caribe'] }
+    ];
+    const SEG = 360 / prizes.length;
+    const WINNER_INDEX = 1;
+    const TEASE_INDEX = 2;
+    const sliceColors = ['#3a2350', '#4a1830', '#3a2350', '#4a3018', '#3a2350', '#4a1830', '#3a2350', '#4a3018'];
+
+    const wheelDock = document.getElementById('wheelDock');
+    const wheelStage = document.getElementById('wheelStage');
+    const wheelCanvas = document.getElementById('wheelCanvas');
+    const wctx = wheelCanvas.getContext('2d');
+    const spinBtn = document.getElementById('spinBtn');
+    const rouletteResult = document.getElementById('rouletteResult');
+
+    // document.documentElement.clientWidth/Height exclude the scrollbar, unlike
+    // 100vw/100vh — using raw vw units here made the wheel drift off-center
+    // and clip its glow whenever the page had a vertical scrollbar
+    function setViewportVars(){
+      document.documentElement.style.setProperty('--vpw', document.documentElement.clientWidth + 'px');
+      document.documentElement.style.setProperty('--vph', document.documentElement.clientHeight + 'px');
+    }
+    setViewportVars();
+    window.addEventListener('resize', setViewportVars);
+
+    let cssSize = 0;
+
+    // re-measures the canvas to match the wheel-stage's CURRENT layout size —
+    // called every frame so it stays crisp even while the dock is mid-grow-transition
+    function renderWheel(rotationDeg){
+      const w = wheelStage.clientWidth;
+      if (w && w !== cssSize) {
+        cssSize = w;
+        const dpr = window.devicePixelRatio || 1;
+        wheelCanvas.width = cssSize * dpr;
+        wheelCanvas.height = cssSize * dpr;
+        wctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      drawWheel(rotationDeg);
+    }
+
+    // draws the wheel with segment 0 starting at the top, rotated clockwise by rotationDeg
+    function drawWheel(rotationDeg){
+      const size = cssSize;
+      if (!size) return;
+      const cx = size / 2, cy = size / 2, radius = size / 2 - 3;
+      wctx.clearRect(0, 0, size, size);
+
+      const chordWidth = 2 * (radius * 0.66) * Math.sin((SEG / 2) * Math.PI / 180);
+      const maxTextWidth = chordWidth * 0.88;
+
+      prizes.forEach((p, i) => {
+        const localStart = i * SEG;
+        const localEnd = (i + 1) * SEG;
+        const startRad = (localStart + rotationDeg - 90) * Math.PI / 180;
+        const endRad = (localEnd + rotationDeg - 90) * Math.PI / 180;
+
+        wctx.beginPath();
+        wctx.moveTo(cx, cy);
+        wctx.arc(cx, cy, radius, startRad, endRad);
+        wctx.closePath();
+        wctx.fillStyle = sliceColors[i % sliceColors.length];
+        wctx.fill();
+        wctx.strokeStyle = 'rgba(255,209,102,0.35)';
+        wctx.lineWidth = 1.5;
+        wctx.stroke();
+
+        // text stays upright and horizontal in every slice — only its position
+        // orbits around the wheel, so no label is ever sideways or upside down
+        const midLocal = localStart + SEG / 2;
+        const midRad = (midLocal + rotationDeg - 90) * Math.PI / 180;
+
+        const tdist = radius * 0.66;
+        const tx = cx + Math.cos(midRad) * tdist;
+        const ty = cy + Math.sin(midRad) * tdist;
+
+        wctx.save();
+        wctx.translate(tx, ty);
+        wctx.textAlign = 'center';
+        wctx.textBaseline = 'middle';
+        wctx.fillStyle = '#f5eefc';
+        wctx.shadowColor = 'rgba(0,0,0,0.65)';
+        wctx.shadowBlur = 3;
+
+        // shrink the font until every line fits within its slice's width
+        let fontSize = Math.max(8, radius * 0.086);
+        wctx.font = `600 ${fontSize}px Poppins, sans-serif`;
+        let widest = Math.max(...p.lines.map(l => wctx.measureText(l).width));
+        if (widest > maxTextWidth) {
+          fontSize *= maxTextWidth / widest;
+          fontSize = Math.max(9, fontSize);
+          wctx.font = `600 ${fontSize}px Poppins, sans-serif`;
+        }
+
+        const lineH = fontSize * 1.18;
+        const totalH = (p.lines.length - 1) * lineH;
+        p.lines.forEach((line, li) => {
+          wctx.fillText(line, 0, -totalH / 2 + li * lineH);
+        });
+        wctx.restore();
+      });
+
+      wctx.beginPath();
+      wctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      wctx.strokeStyle = 'rgba(255,209,102,0.6)';
+      wctx.lineWidth = 3;
+      wctx.stroke();
+    }
+
+    // rotation such that a point `frac` of the way through segment `index` lands under the top pointer
+    function rotationFor(index, frac){
+      const local = index * SEG + frac * SEG;
+      return ((360 - local) % 360 + 360) % 360;
+    }
+
+    let currentRotation = 0;
+    let spinning = false;
+    let idling = false;
+
+    function idleTick(){
+      if (!idling) return;
+      currentRotation += 0.03;
+      renderWheel(currentRotation);
+      requestAnimationFrame(idleTick);
+    }
+    function startIdle(){
+      if (idling) return;
+      idling = true;
+      requestAnimationFrame(idleTick);
+    }
+    function stopIdle(){ idling = false; }
+
+    function initWheel(){
+      if (cssSize) return;
+      setViewportVars();
+      renderWheel(0);
+      startIdle();
+    }
+
+    function spawnConfetti(){
+      const rect = wheelStage.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height * 0.3;
+      const bits = ['🎉','✨','💗','🧥','⭐','💫'];
+      for(let i=0;i<26;i++){
+        const el = document.createElement('div');
+        el.className = 'confetti-bit';
+        el.textContent = bits[Math.floor(Math.random()*bits.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 90 + Math.random()*140;
+        el.style.left = cx + 'px';
+        el.style.top = cy + 'px';
+        el.style.setProperty('--dx', (Math.cos(angle)*dist) + 'px');
+        el.style.setProperty('--dy', (Math.sin(angle)*dist - 40) + 'px');
+        el.style.setProperty('--rot', (Math.random()*360-180) + 'deg');
+        el.style.animationDelay = (Math.random()*0.15) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1400);
+      }
+    }
+
+    // two-regime ease: a short constant-speed burst, then a long quintic crawl —
+    // derivative matches at the seam so there's no visible pause or speed-jump,
+    // just a slow, gradual, drawn-out braking into what looks like a stop
+    const SPLIT = 0.20;
+    const FAST_PCT = 5 * SPLIT / (1 + 4 * SPLIT);
+    function teaseEase(t){
+      if (t <= SPLIT) return (t / SPLIT) * FAST_PCT;
+      const t2 = (t - SPLIT) / (1 - SPLIT);
+      return FAST_PCT + (1 - FAST_PCT) * (1 - Math.pow(1 - t2, 5));
+    }
+    function easeOutQuad(t){ return 1 - (1 - t) * (1 - t); }
+    function lerp(a, b, t){ return a + (b - a) * t; }
+
+    function animateRotation(from, to, duration, easeFn, onDone){
+      const t0 = performance.now();
+      (function frame(now){
+        const t = Math.min((now - t0) / duration, 1);
+        currentRotation = lerp(from, to, easeFn(t));
+        renderWheel(currentRotation);
+        if (t < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          currentRotation = to;
+          renderWheel(to);
+          onDone && onDone();
+        }
+      })(t0);
+    }
+
+    spinBtn.addEventListener('click', () => {
+      if (spinning) return;
+      spinning = true;
+      stopIdle();
+      spinBtn.disabled = true;
+      rouletteResult.classList.remove('show');
+      rouletteResult.textContent = '';
+      wheelDock.classList.add('grown');
+
+      const startRotation = currentRotation;
+
+      // phase 1: settle deep into Auto 0km, on the side closest to Camperita —
+      // "closest to Camperita" is reached LATE as the wheel spins forward, so a
+      // small frac (near auto's own start) is what lands there
+      const teaseBase = rotationFor(TEASE_INDEX, 0.18);
+      const startTurns = Math.floor(startRotation / 360);
+      const teaseRotation = (startTurns + 7) * 360 + teaseBase;
+
+      // phase 2: just barely into Camperita on the side shared with Auto —
+      // nowhere near its center — minimal forward nudge
+      const winnerBase = rotationFor(WINNER_INDEX, 0.90);
+      const snapDelta = ((winnerBase - (teaseRotation % 360)) % 360 + 360) % 360;
+      const winnerRotation = teaseRotation + snapDelta;
+
+      animateRotation(startRotation, teaseRotation, 13000, teaseEase, () => {
+        setTimeout(() => {
+          animateRotation(teaseRotation, winnerRotation, 480, easeOutQuad, () => {
+            spawnConfetti();
+            rouletteResult.innerHTML = `¡Ganaste... una <strong>Camperita Facherita</strong>! 🧥`;
+            rouletteResult.classList.add('show');
+            spinBtn.disabled = false;
+            spinBtn.textContent = 'Girar de nuevo';
+            spinning = false;
+            startIdle();
+          });
+        }, 900);
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      if (cssSize) renderWheel(currentRotation);
+    });
+
+    // fireworks
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      const canvas = document.getElementById('fireworks');
+      const ctx = canvas.getContext('2d');
+      let W, H;
+      function resize(){
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const palette = ['#ff5fa2', '#ff9ec7', '#8a5cff', '#ffd166', '#ffffff'];
+      let particles = [];
+
+      function launchFirework(){
+        // launches from a bottom corner, off-screen, and arcs inward toward the center
+        const fromLeft = Math.random() < 0.5;
+        const originX = fromLeft
+          ? W * (-0.08 + Math.random() * 0.1)
+          : W * (0.98 + Math.random() * 0.1);
+        const originY = H * (0.95 + Math.random() * 0.15);
+        // burst point stays biased toward the side it launched from, not dead center
+        const targetX = fromLeft
+          ? W * (0.16 + Math.random() * 0.24)
+          : W * (0.6 + Math.random() * 0.24);
+        const targetY = H * (0.14 + Math.random() * 0.24);
+        // control point hugs the origin's x while already at apex height,
+        // so the path rises near the side first, then sweeps into the center
+        const controlX = originX;
+        const controlY = targetY;
+        const color = palette[Math.floor(Math.random() * palette.length)];
+
+        const duration = 1700 + Math.random() * 700;
+        const startTime = performance.now();
+
+        // partial sine curve: decelerates but never fully flattens to zero speed
+        const easeReach = Math.PI / 2 * 0.78;
+        const easeNorm = Math.sin(easeReach);
+
+        function riseStep(now){
+          const t = Math.min((now - startTime) / duration, 1);
+          const eased = Math.sin(t * easeReach) / easeNorm;
+          const mt = 1 - eased;
+          const x = mt*mt*originX + 2*mt*eased*controlX + eased*eased*targetX;
+          const y = mt*mt*originY + 2*mt*eased*controlY + eased*eased*targetY;
+
+          particles.push({
+            x: x + (Math.random()-0.5)*2,
+            y,
+            vx: 0, vy: 0.3,
+            alpha: 0.5, decay: 0.06,
+            size: 1.6, color, gravity: 0
+          });
+
+          if (t >= 1) {
+            explode(x, y, color);
+            return;
+          }
+          requestAnimationFrame(riseStep);
+        }
+        requestAnimationFrame(riseStep);
+      }
+
+      function explode(x, y, color){
+        // core flash at the burst point
+        flashes.push({ x, y, alpha: 0.9, size: 3, maxSize: 30, color });
+
+        const count = 24 + Math.floor(Math.random()*10);
+        for(let i=0;i<count;i++){
+          const angle = (Math.PI * 2 * i) / count + Math.random()*0.2;
+          const speed = 1.2 + Math.random()*2.2;
+          particles.push({
+            x, y,
+            vx: Math.cos(angle)*speed,
+            vy: Math.sin(angle)*speed,
+            alpha: 1,
+            decay: 0.013 + Math.random()*0.012,
+            size: 2.1 + Math.random()*1.7,
+            color,
+            gravity: 0.032
+          });
+        }
+      }
+
+      let flashes = [];
+
+      function tick(){
+        ctx.clearRect(0, 0, W, H);
+
+        // expanding burst flash
+        flashes = flashes.filter(f => f.alpha > 0.02);
+        for(const f of flashes){
+          f.size += (f.maxSize - f.size) * 0.25;
+          f.alpha *= 0.86;
+          const grad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.size);
+          grad.addColorStop(0, f.color);
+          grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.globalAlpha = Math.max(f.alpha, 0);
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
+          ctx.fill();
+        }
+
+        particles = particles.filter(p => p.alpha > 0.02);
+        ctx.globalCompositeOperation = 'lighter';
+        for(const p of particles){
+          p.vy += p.gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+          const a = Math.max(p.alpha, 0);
+
+          // soft glow halo
+          ctx.globalAlpha = a * 0.5;
+          const glowR = p.size * 4.5;
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+          grad.addColorStop(0, p.color);
+          grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, glowR, 0, Math.PI*2);
+          ctx.fill();
+
+          // bright core
+          ctx.globalAlpha = a;
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 0.55, 0, Math.PI*2);
+          ctx.fill();
+
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(tick);
+      }
+      tick();
+
+      function scheduleNext(){
+        const delay = 1800 + Math.random()*2200;
+        setTimeout(() => { launchFirework(); scheduleNext(); }, delay);
+      }
+      setTimeout(launchFirework, 900);
+      scheduleNext();
+    }
+  </script>
+
+</body>
+</html>
