@@ -375,7 +375,7 @@
     position:absolute;
     left:50%;
     top:100%;
-    margin-top:calc(8px + 7vh);
+    margin-top:calc(8px + 8.5vh);
     transform:translateX(-50%);
     width:calc(var(--vpw, 100vw) + 160px);
     overflow:visible;
@@ -392,9 +392,12 @@
     transition:width 900ms cubic-bezier(.25,0,.2,1), transform 900ms cubic-bezier(.25,0,.2,1);
     overflow:visible;
   }
+  /* translateY trimmed from 10vh to 8.5vh — wheel-dock moved down 1.5vh (idle
+     wheel now clears the button by a bit more) and this shrinks by the same
+     1.5vh so the GROWN/spinning wheel lands at the exact same spot as before */
   .wheel-dock.grown .wheel-stage{
     width:min(calc(var(--vpw, 100vw) * 1.45), calc(var(--vph, 100vh) * 1.05), 880px);
-    transform:translateX(-50%) translateY(10vh);
+    transform:translateX(-50%) translateY(8.5vh);
   }
 
   #wheelCanvas{
@@ -462,12 +465,12 @@
      it never needs to reserve space; when the wheel grows and slides down
      for the spin (.grown .wheel-stage translateY), this sits in the gap that
      opens up above it — nothing else on the page is ever pushed or resized.
-     top is negative to cancel out wheel-dock's own margin-top: wheel-dock got
-     pushed down (extra gap so it stops crowding the Girar button) but this
-     text should stay put right under the button, where it sat before that. */
+     top is negative to cancel out wheel-dock's own margin-top (pushed down so
+     it stops crowding the Girar button) plus a bit extra to sit a touch
+     higher than before. */
   .roulette-flavor{
     position:absolute;
-    top:calc(-7vh);
+    top:calc(-10vh);
     left:0;
     right:0;
     height:10vh;
