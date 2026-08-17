@@ -368,18 +368,17 @@
   }
 
   /* wheel-dock is position:absolute — completely OUT of the flex flow, so
-     growing/translating it can never push roulette-inner. Its "top" is kept
-     in sync with roulette-inner's actual measured height by JS (positionWheelDock)
-     because that height changes between the idle blurb and the big "Girando..."
-     line; this clamp is just the pre-JS fallback for the very first paint. */
+     growing/translating it can never push roulette-inner. "top" is a plain
+     CSS percentage of roulette-inner (its positioned ancestor), so the wheel
+     sits right under the button with no JS measuring needed at all. */
   .wheel-dock{
     position:absolute;
     left:50%;
-    top:clamp(280px, 38vh, 340px);
+    top:100%;
+    margin-top:8px;
     transform:translateX(-50%);
     width:calc(var(--vpw, 100vw) + 160px);
     overflow:visible;
-    transition:top 0.3s ease;
   }
 
   .wheel-stage{
@@ -459,40 +458,34 @@
     cursor:default;
   }
 
-  /* position:absolute takes this fully out of roulette-inner's flex flow —
-     its content swaps between the idle blurb and the big "Girando..." line,
-     but since its own box (top/height) never changes, nothing else (title,
-     button, the wheel below) ever shifts when that swap happens */
+  /* lives inside wheel-dock, over the wheel's top edge. Invisible at rest, so
+     it never needs to reserve space; when the wheel grows and slides down
+     for the spin (.grown .wheel-stage translateY), this sits in the gap that
+     opens up above it — nothing else on the page is ever pushed or resized */
   .roulette-flavor{
     position:absolute;
-    top:100%;
+    top:0;
     left:0;
     right:0;
-    margin-top:16px;
-    height:min(38vh, 220px);
-    text-align:center;
-    font-size:14.5px;
-    line-height:1.6;
-    color:var(--text-dim);
-    opacity:0.8;
-    font-style:italic;
+    height:10vh;
+    min-height:56px;
+    z-index:2;
     display:flex;
     align-items:center;
     justify-content:center;
-    transition:opacity 0.4s ease;
-  }
-  .roulette-flavor.hide{
+    text-align:center;
     opacity:0;
+    pointer-events:none;
+    transition:opacity 0.4s ease;
   }
   .roulette-flavor.spinning{
     opacity:1;
-    font-style:normal;
     font-weight:700;
-    font-size:clamp(2.4rem, 11vw, 3.2rem);
+    font-size:clamp(1.7rem, 8.5vw, 2.3rem);
     letter-spacing:0.5px;
     font-family:'Playfair Display', serif;
     color:var(--pink-soft);
-    text-shadow:0 0 24px rgba(255,95,162,0.65), 0 0 48px rgba(138,92,255,0.4);
+    text-shadow:0 0 22px rgba(255,95,162,0.65), 0 0 44px rgba(138,92,255,0.4);
     animation:flavorEnter 0.35s ease-out, flavorPulse 1.3s ease-in-out 0.35s infinite;
   }
   @keyframes flavorEnter{
@@ -634,15 +627,19 @@
       <div class="roulette-eyebrow">girá y descubrí tu premio</div>
 
       <button class="spin-btn" id="spinBtn">Girar</button>
-      <div class="roulette-flavor" id="rouletteFlavor"><span class="flavor-msg" id="flavorMsg">el destino ya eligió tu premio...<br>¿tenés lo que hay que tener? 👀✨</span></div>
-    </div>
 
-    <!-- arrow lives inside wheel-stage so it translates/grows with it -->
-    <div class="wheel-dock" id="wheelDock">
-      <div class="wheel-stage" id="wheelStage">
-        <div class="wheel-arrow"></div>
-        <canvas id="wheelCanvas"></canvas>
-        <div class="wheel-pin"></div>
+      <!-- sits right under the button (pure CSS, no JS measuring) so the
+           wheel shows up high/centered as soon as this screen opens -->
+      <div class="wheel-dock" id="wheelDock">
+        <!-- lives in the gap that opens up above the wheel once it grows
+             and slides down for the spin, instead of pushing anything -->
+        <div class="roulette-flavor" id="rouletteFlavor"><span class="flavor-msg" id="flavorMsg"></span></div>
+        <!-- arrow lives inside wheel-stage so it translates/grows with it -->
+        <div class="wheel-stage" id="wheelStage">
+          <div class="wheel-arrow"></div>
+          <canvas id="wheelCanvas"></canvas>
+          <div class="wheel-pin"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -723,35 +720,12 @@
     const winReveal = document.getElementById('winReveal');
     const rouletteFlavor = document.getElementById('rouletteFlavor');
     const flavorMsg = document.getElementById('flavorMsg');
-    const rouletteInnerEl = document.querySelector('.roulette-inner');
 
-    // wheel-dock is positioned out of the normal flow (so growing/moving the
-    // wheel never reflows the page), but that means its "top" has to be kept
-    // in sync by hand — measure where the flavor box actually ends. That box
-    // has a fixed height (see .roulette-flavor CSS) so swapping its content
-    // between the idle blurb and the big "Girando..." line never moves it —
-    // this only needs to react to real layout changes like a viewport resize
-    // or the web fonts finishing their load after the first measurement.
-    function positionWheelDock(){
-      const rect = rouletteFlavor.getBoundingClientRect();
-      wheelDock.style.top = Math.round(rect.bottom + 8) + 'px';
-    }
-    if (window.ResizeObserver) {
-      new ResizeObserver(positionWheelDock).observe(rouletteInnerEl);
-    }
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(positionWheelDock);
-    }
-
-    // big shimmering "Girando......" fills the empty space above the wheel
-    // while it spins, instead of leaving it blank until the result
-    // NOTE: no positionWheelDock() call here on purpose — the flavor box has a
-    // fixed CSS height so its position never actually changes between states,
-    // and calling it here mid-animation used to catch the entrance pop's
-    // transient scaled-down size, permanently mispositioning the wheel
+    // big shimmering "Girando......" appears in the gap that opens up above
+    // the wheel once it grows and slides down for the spin (pure CSS, see
+    // .roulette-flavor) — no JS measuring/positioning needed at all
     function startFlavorCycle(){
       flavorMsg.innerHTML = 'Girando<span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span><span class="flavor-dot">.</span>';
-      rouletteFlavor.classList.remove('hide');
       rouletteFlavor.classList.add('spinning');
     }
     function stopFlavorCycle(){
@@ -882,7 +856,6 @@
     function initWheel(){
       if (cssSize) return;
       setViewportVars();
-      positionWheelDock();
       renderWheel(0);
       startIdle();
     }
@@ -968,14 +941,13 @@
         setTimeout(() => {
           animateRotation(teaseRotation, winnerRotation, 380, easeOutQuad, () => {
             stopFlavorCycle();
-            rouletteFlavor.classList.add('hide');
             spinning = false;
             startIdle();
             // a beat of suspense on the landed wheel before the big reveal
             setTimeout(() => {
               spawnConfetti();
               winReveal.classList.add('show');
-            }, 1000);
+            }, 500);
           });
         }, 150);
       });
@@ -983,7 +955,6 @@
 
     window.addEventListener('resize', () => {
       if (cssSize) renderWheel(currentRotation);
-      if (cssSize) positionWheelDock();
     });
 
     // fireworks
