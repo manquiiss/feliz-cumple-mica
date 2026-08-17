@@ -375,7 +375,7 @@
     position:absolute;
     left:50%;
     top:100%;
-    margin-top:8px;
+    margin-top:calc(8px + 7vh);
     transform:translateX(-50%);
     width:calc(var(--vpw, 100vw) + 160px);
     overflow:visible;
@@ -461,10 +461,13 @@
   /* lives inside wheel-dock, over the wheel's top edge. Invisible at rest, so
      it never needs to reserve space; when the wheel grows and slides down
      for the spin (.grown .wheel-stage translateY), this sits in the gap that
-     opens up above it — nothing else on the page is ever pushed or resized */
+     opens up above it — nothing else on the page is ever pushed or resized.
+     top is negative to cancel out wheel-dock's own margin-top: wheel-dock got
+     pushed down (extra gap so it stops crowding the Girar button) but this
+     text should stay put right under the button, where it sat before that. */
   .roulette-flavor{
     position:absolute;
-    top:0;
+    top:calc(-7vh);
     left:0;
     right:0;
     height:10vh;
